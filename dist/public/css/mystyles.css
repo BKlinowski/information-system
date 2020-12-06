@@ -26,3 +26,15 @@ main {
 .backdrop.is-active{
     display: block;
 }
+
+.border--danger {
+    border: 2px solid hsl(348, 100%, 61%);
+}
+
+.border--warning {
+    border: 2px solid hsl(48, 100%, 67%);
+}
+
+.border--info {
+    border: 2px solid hsl(204, 86%, 53%);
+}

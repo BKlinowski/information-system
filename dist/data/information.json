@@ -1,0 +1,34 @@
+{
+  "informations": [
+    {
+      "title": "Information 1",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a maximus quam, bibendum viverra orci. Curabitur euismod augue at sodales congue. Morbi ornare vulputate lectus quis fermentum. Vestibulum vel velit eu arcu posuere laoreet. Fusce ut sapien vel tellus imperdiet cursus. Cras vel pretium ante, non fringilla magna. Fusce quis libero ornare, sagittis nibh at, vestibulum dui. Donec hendrerit justo dolor, quis fringilla neque sollicitudin vitae. Phasellus id enim arcu. Etiam porta ante sed maximus viverra. ",
+      "importance": "1",
+      "imageURL": "https://images.pexels.com/photos/2827999/pexels-photo-2827999.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1750&w=500"
+    },
+    {
+        "title": "Information 2",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a maximus quam, bibendum viverra orci. Curabitur euismod augue at sodales congue. Morbi ornare vulputate lectus quis fermentum. Vestibulum vel velit eu arcu posuere laoreet. Fusce ut sapien vel tellus imperdiet cursus. Cras vel pretium ante, non fringilla magna. Fusce quis libero ornare, sagittis nibh at, vestibulum dui. Donec hendrerit justo dolor, quis fringilla neque sollicitudin vitae. Phasellus id enim arcu. Etiam porta ante sed maximus viverra. ",
+        "importance": "2",
+        "imageURL": "https://images.pexels.com/photos/2079223/pexels-photo-2079223.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+      },
+      {
+        "title": "Information 3",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a maximus quam, bibendum viverra orci. Curabitur euismod augue at sodales congue. Morbi ornare vulputate lectus quis fermentum. Vestibulum vel velit eu arcu posuere laoreet. Fusce ut sapien vel tellus imperdiet cursus. Cras vel pretium ante, non fringilla magna. Fusce quis libero ornare, sagittis nibh at, vestibulum dui. Donec hendrerit justo dolor, quis fringilla neque sollicitudin vitae. Phasellus id enim arcu. Etiam porta ante sed maximus viverra. ",
+        "importance": "3",
+        "imageURL": "https://images.pexels.com/photos/763398/pexels-photo-763398.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+      },
+      {
+        "title": "Information 4",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a maximus quam, bibendum viverra orci. Curabitur euismod augue at sodales congue. Morbi ornare vulputate lectus quis fermentum. Vestibulum vel velit eu arcu posuere laoreet. Fusce ut sapien vel tellus imperdiet cursus. Cras vel pretium ante, non fringilla magna. Fusce quis libero ornare, sagittis nibh at, vestibulum dui. Donec hendrerit justo dolor, quis fringilla neque sollicitudin vitae. Phasellus id enim arcu. Etiam porta ante sed maximus viverra. ",
+        "importance": "2",
+        "imageURL": "https://images.pexels.com/photos/78783/submachine-gun-rifle-automatic-weapon-weapon-78783.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+      },
+      {
+        "title": "Information 5",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a maximus quam, bibendum viverra orci. Curabitur euismod augue at sodales congue. Morbi ornare vulputate lectus quis fermentum. Vestibulum vel velit eu arcu posuere laoreet. Fusce ut sapien vel tellus imperdiet cursus. Cras vel pretium ante, non fringilla magna. Fusce quis libero ornare, sagittis nibh at, vestibulum dui. Donec hendrerit justo dolor, quis fringilla neque sollicitudin vitae. Phasellus id enim arcu. Etiam porta ante sed maximus viverra. ",
+        "importance": "1",
+        "imageURL": "https://images.pexels.com/photos/36031/firefighter-fire-portrait-training.jpg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+      }
+  ]
+}

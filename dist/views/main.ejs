@@ -1,29 +1,40 @@
-<%- include("./includes/head.ejs") %> 
+<%- include("./includes/head.ejs") %>
 </head>
+
 <body>
-    <%- include("./includes/nav.ejs") %> 
-    
+    <%- include("./includes/nav.ejs") %>
+
     <main>
-        <div class="columns is-multiline">
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
-            </div>
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
-            </div>
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
-            </div>
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
-            </div>
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
-            </div>
-            <div class="column is-4">
-                <div class="box is-child is-full">Page</div>
+        <div class="container">
+            <div class="columns is-multiline">
+                <% disctricts.forEach(disctrict => { %> 
+                <div class="column is-4-widescreen is-6-tablet">
+                    <div class="box is-child is-full">
+                        <article class="media">
+                            <figure class="media-left">
+                              <p class="image is-128x128">
+                                <img src="<%= disctrict.imageURL %>">
+                              </p>
+                            </figure>
+                            <div class="media-content">
+                              <div class="content">
+                                <p>
+                                  <strong><%= disctrict.name %></strong> 
+                                </p>
+                                <button class="button is-success is-outlined is-big is-fullwidth">Subscribe</button>
+                              </div>
+                              <nav class="level is-mobile">
+                                <div class="level-left">
+                                </div>
+                              </nav>
+                            </div>
+                          </article>
+                    </div>
+                </div>
+                <% }) %>
             </div>
         </div>
     </main>
 </body>
+
 </html>

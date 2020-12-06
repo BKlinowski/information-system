@@ -1,0 +1,40 @@
+{
+    "disctricts": [
+        {
+            "name": "Bieżanów",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Czyżyny",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Płaszów",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Tyniec",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Bielany",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Łęg",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Podgórze",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Mydlniki",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        },
+        {
+            "name": "Prokocim",
+            "imageURL": "https://images.pexels.com/photos/4913427/pexels-photo-4913427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+        }
+    ]
+}

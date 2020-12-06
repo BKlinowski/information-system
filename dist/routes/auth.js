@@ -20,8 +20,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const adminController = __importStar(require("../controllers/admin"));
+const authController = __importStar(require("../controllers/auth"));
 const router = express_1.Router();
-router.get("/add-new-district", adminController.getAddDistrict);
-router.get("/add-new-information", adminController.getAddNewInformation);
+router.get("/login", authController.getLogin);
+router.get("/signup", authController.getSignup);
 exports.default = router;
