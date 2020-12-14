@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const app = express_1.default();
 const dist = require("./data/disctricts.json");
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
@@ -24,4 +25,14 @@ app.get('/', (req, res, next) => {
 });
 const error_1 = require("./controllers/error");
 app.use(error_1.get404);
-app.listen(3000);
+mongoose_1.default
+    .connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.qbmdu.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(result => {
+    console.log("Database connected");
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server listening on port ${process.env.PORT || 3000}`);
+    });
+})
+    .catch(err => {
+    console.log(err);
+});
