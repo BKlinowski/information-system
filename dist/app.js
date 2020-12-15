@@ -8,6 +8,10 @@ const path_1 = __importDefault(require("path"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const app = express_1.default();
 const dist = require("./data/disctricts.json");
+app.use(express_1.default.urlencoded({
+    extended: true,
+    type: "application/x-www-form-urlencoded"
+}));
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", (path_1.default.join(__dirname, "views")));
@@ -22,6 +26,7 @@ app.get('/', (req, res, next) => {
     res.render("main", {
         disctricts: dist.disctricts
     });
+    res.end();
 });
 const error_1 = require("./controllers/error");
 app.use(error_1.get404);

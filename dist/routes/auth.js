@@ -18,10 +18,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authController = __importStar(require("../controllers/auth"));
+const check_1 = require("express-validator/check");
+const user_1 = __importDefault(require("../models/user"));
 const router = express_1.Router();
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
+router.post("/signup", [
+    check_1.body("email")
+        .isEmail()
+        .withMessage("Please enter a valid email address")
+        .custom((value) => {
+        user_1.default.exists({ email: value }).then((result) => {
+            if (result)
+                return Promise.reject("Email already exists. Pick a different one.");
+        });
+    })
+        .normalizeEmail(),
+    check_1.body("password")
+        .isLength({
+        min: 8,
+    })
+        .trim()
+        .isAlphanumeric()
+        .withMessage("Password has to be valid"),
+    check_1.body("passwordConf")
+        .isLength({
+        min: 8,
+    })
+        .trim()
+        .isAlphanumeric()
+        .custom((value, { req }) => {
+        console.log(value, req.body.password);
+    })
+        .withMessage("PasswordConf has to be valid"),
+], authController.postSignup);
 exports.default = router;

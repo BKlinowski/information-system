@@ -6,6 +6,11 @@ const app = express()
 
 const dist = require("./data/disctricts.json")
 
+app.use(express.urlencoded(
+    {
+        extended: true, 
+        type: "application/x-www-form-urlencoded"
+    })) 
 app.use(express.static(path.join(__dirname, "public")))
 
 app.set("view engine", "ejs")
@@ -25,6 +30,7 @@ app.get('/' ,(req: Request, res: Response, next: NextFunction) =>{
     res.render("main", {
         disctricts: dist.disctricts
     })
+    res.end()
 })
 
 import {get404} from "./controllers/error"
