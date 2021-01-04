@@ -34,7 +34,7 @@ router.post("/signup", [
         .isEmail()
         .withMessage("Please enter a valid email address")
         .custom((value) => {
-        user_1.default.exists({ email: value }).then((result) => {
+        return user_1.default.exists({ email: value }).then((result) => {
             if (result)
                 return Promise.reject("Email already exists. Pick a different one.");
         });
@@ -44,18 +44,30 @@ router.post("/signup", [
         .isLength({
         min: 8,
     })
+        .withMessage("Password must be 8 characters length")
         .trim()
         .isAlphanumeric()
-        .withMessage("Password has to be valid"),
+        .withMessage("Password must consist of alphanumeric characters"),
     check_1.body("passwordConf")
+        .trim()
+        .custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error("Passwords have to match");
+        }
+        return true;
+    }),
+], authController.postSignup);
+router.post("/login", [
+    check_1.body("email")
+        .isEmail()
+        .withMessage("Email or password invalid")
+        .normalizeEmail(),
+    check_1.body("password")
         .isLength({
         min: 8,
     })
         .trim()
         .isAlphanumeric()
-        .custom((value, { req }) => {
-        console.log(value, req.body.password);
-    })
-        .withMessage("PasswordConf has to be valid"),
-], authController.postSignup);
+        .withMessage("Email or password invalid"),
+], authController.postLogin);
 exports.default = router;

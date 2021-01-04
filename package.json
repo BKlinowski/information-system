@@ -19,15 +19,22 @@
   },
   "homepage": "https://github.com/BKlinowski/information-system#readme",
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/connect-mongodb-session": "^2.4.0",
     "@types/express": "^4.17.9",
+    "@types/express-session": "^1.17.3",
     "@types/node": "^14.14.10",
     "nodemon": "^2.0.6"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "bulma": "^0.9.1",
+    "connect-mongodb-session": "^2.4.1",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "express-validator": "^6.8.0",
+    "i": "^0.3.6",
     "mongoose": "^5.11.7"
   }
 }
