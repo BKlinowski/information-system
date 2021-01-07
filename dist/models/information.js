@@ -8,28 +8,23 @@ const Schema = mongoose_1.default.Schema;
 const informationSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,
-        required: true
+        required: true,
     },
     importance: {
-        type: String,
-        required: true
+        type: Number,
+        required: true,
     },
     imageURL: {
         type: String,
-        required: true
+        required: true,
     },
-    districts: [
-        {
-            userId: {
-                type: String,
-                required: true,
-                ref: "User"
-            }
-        }
-    ]
+    districtId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
 });
 exports.default = mongoose_1.default.model("Information", informationSchema);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.postSignup = exports.getSignup = exports.getLogin = void 0;
+exports.postLogout = exports.postLogin = exports.postSignup = exports.getSignup = exports.getLogin = void 0;
 const express_validator_1 = require("express-validator");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("../models/user"));
@@ -32,6 +32,7 @@ const postSignup = (req, res, next) => {
             const user = new user_1.default({
                 email,
                 password: hash,
+                permissions: 0,
             });
             user.save().then((data) => {
                 res.redirect("/");
@@ -59,10 +60,17 @@ const postLogin = (req, res, next) => {
             console.log("USER: ", user);
             bcrypt_1.default
                 .compare(req.body.password, user.password)
-                .then(() => {
-                req.session.user = user;
-                req.session.isLoggedIn = true;
-                res.status(200).redirect("/");
+                .then((doMatch) => {
+                if (doMatch) {
+                    req.session.user = user;
+                    req.session.userLoggedIn = true;
+                    req.session.adminLoggedIn = user.permissions >= 10 ? true : false;
+                    return req.session.save((err) => {
+                        console.log(err);
+                        res.status(200).redirect("/");
+                    });
+                }
+                res.redirect("login");
             })
                 .catch((err) => {
                 console.log(err);
@@ -71,3 +79,10 @@ const postLogin = (req, res, next) => {
     }
 };
 exports.postLogin = postLogin;
+const postLogout = (req, res, next) => {
+    req.session.destroy((err) => {
+        console.log(err);
+        res.redirect("/");
+    });
+};
+exports.postLogout = postLogout;

@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
+const district_1 = __importDefault(require("./models/district"));
 const app = express_1.default();
 const MongoDBStore = connect_mongodb_session_1.default(express_session_1.default);
 const store = new MongoDBStore({
@@ -26,6 +27,12 @@ app.use(express_session_1.default({
     saveUninitialized: false,
     store,
 }));
+app.use((req, res, next) => {
+    res.locals.userLoggedIn = req.session.userLoggedIn;
+    res.locals.adminLoggedIn = req.session.adminLoggedIn;
+    res.locals.user = req.session.user;
+    next();
+});
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 // express.json()
@@ -36,10 +43,12 @@ app.use(user_1.default);
 const admin_1 = __importDefault(require("./routes/admin"));
 app.use("/admin", admin_1.default);
 app.get("/", (req, res, next) => {
-    res.render("main", {
-        disctricts: dist.disctricts,
+    district_1.default.find((err, docs) => {
+        res.render("main", {
+            districts: docs,
+        });
+        console.log(err);
     });
-    res.end();
 });
 const error_1 = require("./controllers/error");
 app.use(error_1.get404);

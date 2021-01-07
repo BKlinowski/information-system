@@ -5,6 +5,8 @@ import * as authController from "../controllers/auth";
 import { body } from "express-validator/check";
 
 import User from "../models/user";
+import userLoggedIn from "../middleware/userLoggedIn";
+import adminLoggedIn from "../middleware/adminLoggedIn";
 
 const router = Router();
 
@@ -63,6 +65,12 @@ router.post(
       .withMessage("Email or password invalid"),
   ],
   authController.postLogin
+);
+
+router.post(
+  "/logout",
+  userLoggedIn || adminLoggedIn,
+  authController.postLogout
 );
 
 export default router;

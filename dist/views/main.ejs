@@ -1,40 +1,53 @@
 <%- include("./includes/head.ejs") %>
-</head>
+  </head>
 
-<body>
+  <body>
     <%- include("./includes/nav.ejs") %>
 
-    <main>
+      <main>
         <div class="container">
-            <div class="columns is-multiline">
-                <% disctricts.forEach(disctrict => { %> 
-                <div class="column is-4-widescreen is-6-tablet">
-                    <div class="box is-child is-full">
-                        <article class="media">
-                            <figure class="media-left">
-                              <p class="image is-128x128">
-                                <img src="<%= disctrict.imageURL %>">
-                              </p>
-                            </figure>
-                            <div class="media-content">
-                              <div class="content">
-                                <p>
-                                  <strong><%= disctrict.name %></strong> 
-                                </p>
-                                <button class="button is-success is-outlined is-big is-fullwidth">Subscribe</button>
-                              </div>
-                              <nav class="level is-mobile">
-                                <div class="level-left">
-                                </div>
-                              </nav>
-                            </div>
-                          </article>
+          <div class="columns is-multiline">
+            <% districts.forEach(district=> { %>
+              <div class="column is-4-widescreen is-6-tablet">
+                <div class="box is-child is-full">
+                  <article class="media">
+                    <figure class="media-left">
+                      <p class="image is-128x128">
+                        <img src="<%= district.imageURL %>">
+                      </p>
+                    </figure>
+                    <div class="media-content">
+                      <div class="content">
+                        <p>
+                          <strong>
+                            <%= district.name %>
+                          </strong>
+                        </p>
+                        <% if (userLoggedIn) { %>
+                          <form action="/subscribe" method="post">
+                            <% if(district.subscriptions.some(val=> String(val) == String(user._id))){ %>
+                              <button class="button is-danger is-outlined is-big is-fullwidth"
+                                type="submit">Unsubscribe</button>
+                              <% } else {%>
+                                <button class="button is-success is-outlined is-big is-fullwidth"
+                                  type="submit">Subscribe</button>
+                                <% } %>
+                                  <input type="hidden" name="name" value="<%= district.name %>">
+                          </form>
+                          <% } %>
+                      </div>
+                      <nav class="level is-mobile">
+                        <div class="level-left">
+                        </div>
+                      </nav>
                     </div>
+                  </article>
                 </div>
-                <% }) %>
-            </div>
+              </div>
+              <% }) %>
+          </div>
         </div>
-    </main>
-</body>
+      </main>
+  </body>
 
-</html>
+  </html>

@@ -8,20 +8,18 @@ const Schema = mongoose_1.default.Schema;
 const districtSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     imageURL: {
         type: String,
-        required: true
+        required: true,
     },
     subscriptions: [
         {
-            userId: {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-                required: false
-            }
-        }
-    ]
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: false,
+        },
+    ],
 });
 exports.default = mongoose_1.default.model("District", districtSchema);

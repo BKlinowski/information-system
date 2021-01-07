@@ -1,9 +1,13 @@
-import {Router} from "express"
+import { Router } from "express";
 
-import * as userController from "../controllers/user"
+import * as userController from "../controllers/user";
 
-const router = Router()
+import userLoggedIn from "../middleware/userLoggedIn";
 
-router.get("/informations", userController.getInformations)
+const router = Router();
 
-export default router
+router.get("/informations", userLoggedIn, userController.getInformations);
+
+router.post("/subscribe", userLoggedIn, userController.postSubscribe);
+
+export default router;

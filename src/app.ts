@@ -1,17 +1,20 @@
 import express, { Response, Request, NextFunction } from "express";
 import path from "path";
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import session from "express-session";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
+import { UserDoc } from "./models/user";
+import districtModel from "./models/district";
 
 declare module "express-session" {
   interface Session {
-    user: mongoose.Document;
-    isLoggedIn: boolean;
+    user: UserDoc;
+    userLoggedIn: boolean;
+    adminLoggedIn: boolean;
   }
 }
 
-declare var process: {
+declare let process: {
   env: {
     SESSION_SECRET: string;
     NODE_ENV: string;
@@ -47,6 +50,13 @@ app.use(
   })
 );
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.locals.userLoggedIn = req.session.userLoggedIn;
+  res.locals.adminLoggedIn = req.session.adminLoggedIn;
+  res.locals.user = req.session.user;
+  next();
+});
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -61,10 +71,12 @@ import adminRoutes from "./routes/admin";
 app.use("/admin", adminRoutes);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.render("main", {
-    disctricts: dist.disctricts,
+  districtModel.find((err, docs) => {
+    res.render("main", {
+      districts: docs,
+    });
+    console.log(err);
   });
-  res.end();
 });
 
 import { get404 } from "./controllers/error";

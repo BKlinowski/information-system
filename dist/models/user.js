@@ -15,5 +15,18 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    permissions: {
+        type: Number,
+        required: true,
+    },
+    subscriptions: [
+        {
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: false,
+            },
+        },
+    ],
 });
 exports.default = mongoose_1.default.model("User", userSchema);

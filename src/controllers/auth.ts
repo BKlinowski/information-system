@@ -28,6 +28,7 @@ export const postSignup: RequestHandler = (req, res, next) => {
       const user = new User({
         email,
         password: hash,
+        permissions: 0,
       });
       user.save().then((data) => {
         res.redirect("/");
@@ -54,14 +55,28 @@ export const postLogin: RequestHandler = (req, res, next) => {
       console.log("USER: ", user);
       bcrypt
         .compare(req.body.password, user.password)
-        .then(() => {
-          req.session.user = user;
-          req.session.isLoggedIn = true;
-          res.status(200).redirect("/");
+        .then((doMatch) => {
+          if (doMatch) {
+            req.session.user = user;
+            req.session.userLoggedIn = true;
+            req.session.adminLoggedIn = user.permissions >= 10 ? true : false;
+            return req.session.save((err) => {
+              console.log(err);
+              res.status(200).redirect("/");
+            });
+          }
+          res.redirect("login");
         })
         .catch((err) => {
           console.log(err);
         });
     });
   }
+};
+
+export const postLogout: RequestHandler = (req, res, next) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect("/");
+  });
 };

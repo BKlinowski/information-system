@@ -18,9 +18,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const userController = __importStar(require("../controllers/user"));
+const userLoggedIn_1 = __importDefault(require("../middleware/userLoggedIn"));
 const router = express_1.Router();
-router.get("/informations", userController.getInformations);
+router.get("/informations", userLoggedIn_1.default, userController.getInformations);
+router.post("/subscribe", userLoggedIn_1.default, userController.postSubscribe);
 exports.default = router;

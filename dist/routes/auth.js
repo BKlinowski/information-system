@@ -26,6 +26,8 @@ const express_1 = require("express");
 const authController = __importStar(require("../controllers/auth"));
 const check_1 = require("express-validator/check");
 const user_1 = __importDefault(require("../models/user"));
+const userLoggedIn_1 = __importDefault(require("../middleware/userLoggedIn"));
+const adminLoggedIn_1 = __importDefault(require("../middleware/adminLoggedIn"));
 const router = express_1.Router();
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
@@ -70,4 +72,5 @@ router.post("/login", [
         .isAlphanumeric()
         .withMessage("Email or password invalid"),
 ], authController.postLogin);
+router.post("/logout", userLoggedIn_1.default || adminLoggedIn_1.default, authController.postLogout);
 exports.default = router;

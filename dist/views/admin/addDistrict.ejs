@@ -1,35 +1,38 @@
 <%- include("../includes/head.ejs") %>
-</head>
-<body>
+  </head>
+
+  <body>
     <%- include("../includes/nav.ejs") %>
-    <div class="columns">
-        <div class="column is-6-tablet is-offset-3-tablet is-6-desktop is-offset-3-desktop is-4-widescreen is-offset-4-widescreen">
+      <div class="columns">
+        <div
+          class="column is-6-tablet is-offset-3-tablet is-6-desktop is-offset-3-desktop is-4-widescreen is-offset-4-widescreen">
+          <form action="/admin/addDistrict" method="post">
             <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                  <input class="input" type="text" placeholder="name">
-                  <span class="icon is-small is-left">
-                    <i class="fab fa-amilia"></i>
-                  </span>
-                  <span class="icon is-small is-right">
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control has-icons-left">
-                  <input class="input" type="text" placeholder="imageURL">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-print"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control">
-                  <button class="button is-success">
-                    Add
-                  </button>
-                </p>
-              </div>
+              <p class="control has-icons-left has-icons-right">
+                <input name="name" class="input" type="text" placeholder="name">
+                <span class="icon is-small is-left">
+                  <i class="fab fa-amilia"></i>
+                </span>
+                <span class="icon is-small is-right">
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input name="imageURL" class="input" type="text" placeholder="imageURL">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-print"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <button class="button is-success">
+                  Add
+                </button>
+              </p>
+            </div>
+          </form>
         </div>
-    </div>
-    
-</body>
+      </div>
+  </body>
