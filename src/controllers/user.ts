@@ -1,12 +1,10 @@
 import { RequestHandler } from "express";
-const info = require("../data/information.json");
 
 import districtModel from "../models/district";
 import informationModel from "../models/information";
-import { InformationDoc } from "../models/information";
+import webpush from "web-push";
 
 import mongoose from "mongoose";
-import userLoggedIn from "../middleware/userLoggedIn";
 
 export const getInformations: RequestHandler = (req, res, next) => {
   if (req.session.userLoggedIn) {
@@ -62,4 +60,22 @@ export const postSubscribe: RequestHandler = (req, res, next) => {
       });
     }
   });
+};
+
+export const postWebPush: RequestHandler = (req, res, next) => {
+  const subscription = req.body.subscription;
+  const userId = req.body.userId;
+  console.dir(subscription, userId);
+  //TODO: Store subscription keys and userId in DB
+  webpush.setVapidDetails(
+    "192.168.1.169:3001",
+    process.env.PUBLIC_VAPID_KEY!,
+    process.env.PRIVATE_VAPID_KEY!
+  );
+  res.sendStatus(200);
+  const payload = JSON.stringify({
+    title: "test",
+    body: "test",
+  });
+  webpush.sendNotification(subscription, payload);
 };

@@ -22,6 +22,7 @@ const informationSchema = new Schema({
   districtId: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: "District",
   },
 });
 

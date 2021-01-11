@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postSubscribe = exports.getInformations = void 0;
-const info = require("../data/information.json");
+exports.postWebPush = exports.postSubscribe = exports.getInformations = void 0;
 const district_1 = __importDefault(require("../models/district"));
 const information_1 = __importDefault(require("../models/information"));
+const web_push_1 = __importDefault(require("web-push"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getInformations = (req, res, next) => {
     if (req.session.userLoggedIn) {
@@ -66,3 +66,17 @@ const postSubscribe = (req, res, next) => {
     });
 };
 exports.postSubscribe = postSubscribe;
+const postWebPush = (req, res, next) => {
+    const subscription = req.body.subscription;
+    const userId = req.body.userId;
+    console.dir(subscription, userId);
+    //TODO: Store subscription keys and userId in DB
+    web_push_1.default.setVapidDetails("192.168.1.169:3001", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+    res.sendStatus(200);
+    const payload = JSON.stringify({
+        title: "test",
+        body: "test",
+    });
+    web_push_1.default.sendNotification(subscription, payload);
+};
+exports.postWebPush = postWebPush;

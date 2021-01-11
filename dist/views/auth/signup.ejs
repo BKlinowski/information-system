@@ -1,48 +1,64 @@
 <%- include("../includes/head.ejs") %>
-</head>
-<body>
+  </head>
+
+  <body>
     <%- include("../includes/nav.ejs") %>
-    <div class="columns">
-        <div class="column is-6-tablet is-offset-3-tablet is-6-desktop is-offset-3-desktop is-4-widescreen is-offset-4-widescreen">
+      <div class="columns">
+        <div
+          class="column is-6-tablet is-offset-3-tablet is-6-desktop is-offset-3-desktop is-4-widescreen is-offset-4-widescreen">
           <form action="/auth/signup" method="post">
             <div class="field">
-                <p class="control has-icons-left has-icons-right">
-                  <input name="email" class="input <%= %>" type="email" placeholder="Email">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-envelope">
-                    </i>
-                  </span>
-                  <span class="icon is-small is-right">
-                    <i class="fas fa-check"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control has-icons-left">
-                  <input name="password" class="input" type="password" placeholder="Password">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-lock"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control has-icons-left">
-                  <input name="passwordConf" class="input" type="password" placeholder="Confirm Password">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-lock">
-                    </i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control">
-                  <button class="button is-success" type="submit">
-                    Signup
-                  </button>
-                </p>
-              </div>
-            </form>
+              <p class="control has-icons-left has-icons-right">
+                <input name="email" class="input <%= %>" type="email" placeholder="Email">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope">
+                  </i>
+                </span>
+                <span class="icon is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input name="password" class="input" type="password" placeholder="Password">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-lock"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input name="passwordConf" class="input" type="password" placeholder="Confirm Password">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-lock">
+                  </i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <button class="button is-success" type="submit">
+                  Signup
+                </button>
+              </p>
+            </div>
+            <% if (error) { %>
+              <article class="message is-danger">
+                <div class="message-header">
+                  <p>Validation errors</p>
+                </div>
+                <div class="message-body">
+                  <% error.forEach(err=> { %>
+                    <%= err.msg %>
+                      <br>
+                      <% }) %>
+                </div>
         </div>
-    </div>
-    
-</body>
+        </article>
+        <% } %>
+          </form>
+      </div>
+      </div>
+
+  </body>

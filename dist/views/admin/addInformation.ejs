@@ -7,65 +7,93 @@
         <div
           class="column is-6-tablet is-offset-3-tablet is-6-desktop is-offset-3-desktop is-4-widescreen is-offset-4-widescreen">
           <form action="/admin/addInformation" method="POST">
-            <div class="field">
-              <p class="control has-icons-left has-icons-right">
-                <input name="title" class="input" type="text" placeholder="title">
-                <span class="icon is-small is-left">
-                  <i class="fab fa-amilia"></i>
-                </span>
-                <span class="icon is-small is-right">
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input name="description" class="input" type="text" placeholder="description">
-                <span class="icon is-small is-left">
-                  <i class="fas fa-align-justify"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input name="importance" class="input" type="number" min="1" max="3" placeholder="importance">
-                <span class="icon is-small is-left">
-                  <i class="fas fa-exclamation-circle"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input name="imageURL" class="input" type="text" placeholder="imageURL">
-                <span class="icon is-small is-left">
-                  <i class="fas fa-print"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <p class="control has-icons-left">
-                <input name="district" class="input" type="text" placeholder="district">
-                <span class="icon is-small is-left">
-                  <i class="fas fa-city"></i>
-                </span>
-              </p>
-            </div>
-            <div class="field">
-              <!-- <p class="control has-icons-left">
+            <% if (isEdit) { %>
+              <input type="hidden" name="isEdit" value="true">
+              <input type="hidden" name="oldName" value="<%= oldName %>">
+              <% } else { %>
+                <input type="hidden" name="isEdit" value="false">
+                <% } %>
+                  <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                      <input name="title" class="input" type="text" placeholder="title" value="<%= title %>">
+                      <span class="icon is-small is-left">
+                        <i class="fab fa-amilia"></i>
+                      </span>
+                      <span class="icon is-small is-right">
+                      </span>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input name="description" class="input" type="text" placeholder="description"
+                        value="<%= description %>">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-align-justify"></i>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input name="importance" class="input" type="number" min="1" max="3" placeholder="importance"
+                        value="<%= importance %>">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-exclamation-circle"></i>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input name="imageURL" class="input" type="text" placeholder="imageURL" value="<%= imageURL %>">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-print"></i>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input name="district" class="input" type="text" placeholder="district" value="<%= district %>">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-city"></i>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <!-- <p class="control has-icons-left">
                 <input name="date" class="input" type="datetime-local" placeholder="Date">
                 <span class="icon is-small is-left">
                   <i class="fas fa-calendar-alt"></i>
                 </span>
               </p> -->
-            </div>
-            <div class="field">
-              <p class="control">
-                <button type="submit" class="button is-success">
-                  Add
-                </button>
-              </p>
-            </div>
-          </form>
+                  </div>
+                  <div class="field">
+                    <p class="control">
+                      <% if (isEdit) { %>
+                        <button type="submit" class="button is-link">
+                          Update
+                        </button>
+                        <% } else {%>
+                          <button type="submit" class="button is-success">
+                            Add
+                          </button>
+                          <% } %>
+                    </p>
+                  </div>
+                  <% if (error) { %>
+                    <article class="message is-danger">
+                      <div class="message-header">
+                        <p>Validation errors</p>
+                      </div>
+                      <div class="message-body">
+                        <% error.forEach(err=> { %>
+                          <%= err.msg %>
+                            <br>
+                            <% }) %>
+                      </div>
         </div>
-        </form>
+        </article>
+        <% } %>
+          </form>
+      </div>
+      </form>
       </div>
   </body>

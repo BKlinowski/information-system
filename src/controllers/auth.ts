@@ -5,12 +5,16 @@ import bcrypt from "bcrypt";
 import User from "../models/user";
 
 export const getLogin: RequestHandler = (req, res, next) => {
-  res.render("auth/login");
+  res.render("auth/login", {
+    error: null,
+  });
   res.end();
 };
 
 export const getSignup: RequestHandler = (req, res, next) => {
-  res.render("auth/signup");
+  res.render("auth/signup", {
+    error: null,
+  });
   res.end();
 };
 
@@ -43,7 +47,7 @@ export const postLogin: RequestHandler = (req, res, next) => {
   console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/login", {
-      error: errors.array(),
+      error: [{ msg: "Email or password invalid" }],
     });
   } else {
     User.findOne({ email: req.body.email }).then((user) => {

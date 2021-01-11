@@ -5,6 +5,7 @@ import session from "express-session";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
 import { UserDoc } from "./models/user";
 import districtModel from "./models/district";
+import webpush from "web-push";
 
 declare module "express-session" {
   interface Session {

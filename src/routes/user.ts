@@ -10,4 +10,6 @@ router.get("/informations", userLoggedIn, userController.getInformations);
 
 router.post("/subscribe", userLoggedIn, userController.postSubscribe);
 
+router.post("/webPush", userController.postWebPush);
+
 export default router;
