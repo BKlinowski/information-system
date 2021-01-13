@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postDeleteInformation = exports.postDeleteDistrict = exports.postEditDistrict = exports.postEditInformation = exports.getEditInformations = exports.getEditDistricts = exports.postAddInformation = exports.postAddDistrict = exports.getAddNewInformation = exports.getAddDistrict = void 0;
 const express_validator_1 = require("express-validator");
+const web_push_1 = __importDefault(require("web-push"));
 const district_1 = __importDefault(require("../models/district"));
 const information_1 = __importDefault(require("../models/information"));
+const subscription_1 = __importDefault(require("../models/subscription"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAddDistrict = (req, res, next) => {
     res.render("admin/addDistrict", {
@@ -34,7 +36,7 @@ exports.getAddNewInformation = getAddNewInformation;
 const postAddDistrict = (req, res, next) => {
     const isEdit = req.body.isEdit == "true" ? true : false;
     const errors = express_validator_1.validationResult(req);
-    console.log("ADD DISTRICT", errors.array());
+    // console.log("ADD DISTRICT", errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("admin/addDistrict", {
             isEdit,
@@ -80,7 +82,7 @@ const postAddInformation = (req, res, next) => {
     const importance = req.body.importance;
     const district = req.body.district;
     const oldName = req.body.oldName;
-    console.log(errors.array());
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("admin/addInformation", {
             error: errors.array(),
@@ -116,8 +118,8 @@ const postAddInformation = (req, res, next) => {
             });
             if (isEdit) {
                 const oldName = req.body.oldName;
-                console.log("OLD", oldName);
-                console.log(district);
+                // console.log("OLD", oldName);
+                // console.log(district);
                 information_1.default
                     .updateOne({ title: oldName }, {
                     title,
@@ -126,12 +128,50 @@ const postAddInformation = (req, res, next) => {
                     imageURL,
                     districtId: mongoose_1.default.Types.ObjectId(doc._id),
                 })
-                    .then((doc) => {
+                    .then(() => {
+                    for (let i = 0; i < doc.subscriptions.length; i++) {
+                        subscription_1.default
+                            .findOne({ userId: doc.subscriptions[i] })
+                            .then((sub) => {
+                            if (sub) {
+                                web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                const payload = JSON.stringify({
+                                    title,
+                                    description,
+                                    importance,
+                                    imageURL,
+                                    district,
+                                });
+                                web_push_1.default
+                                    .sendNotification(sub.subscription, payload)
+                                    .catch((err) => {
+                                    console.log(err);
+                                });
+                            }
+                        });
+                    }
                     return res.redirect("/");
                 });
             }
             else {
                 newInformation.save().then(() => {
+                    for (let i = 0; i < doc.subscriptions.length; i++) {
+                        subscription_1.default
+                            .findOne({ userId: doc.subscriptions[i] })
+                            .then((sub) => {
+                            if (sub) {
+                                web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                const payload = JSON.stringify({
+                                    title,
+                                    description,
+                                    importance,
+                                    imageURL,
+                                    district,
+                                });
+                                web_push_1.default.sendNotification(sub.subscription, payload);
+                            }
+                        });
+                    }
                     return res.redirect("/");
                 });
             }

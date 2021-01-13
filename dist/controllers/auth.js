@@ -23,7 +23,7 @@ const getSignup = (req, res, next) => {
 exports.getSignup = getSignup;
 const postSignup = (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("auth/signup", {
             error: errors.array(),
@@ -48,7 +48,7 @@ const postSignup = (req, res, next) => {
 exports.postSignup = postSignup;
 const postLogin = (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("auth/login", {
             error: [{ msg: "Email or password invalid" }],
@@ -61,7 +61,7 @@ const postLogin = (req, res, next) => {
                     error: [{ msg: "Email or password invalid" }],
                 });
             }
-            console.log("USER: ", user);
+            // console.log("USER: ", user);
             bcrypt_1.default
                 .compare(req.body.password, user.password)
                 .then((doMatch) => {

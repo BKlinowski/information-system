@@ -28,5 +28,5 @@ const userLoggedIn_1 = __importDefault(require("../middleware/userLoggedIn"));
 const router = express_1.Router();
 router.get("/informations", userLoggedIn_1.default, userController.getInformations);
 router.post("/subscribe", userLoggedIn_1.default, userController.postSubscribe);
-router.post("/webPush", userController.postWebPush);
+router.post("/webPush", userLoggedIn_1.default, userController.postWebPush);
 exports.default = router;

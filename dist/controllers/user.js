@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postWebPush = exports.postSubscribe = exports.getInformations = void 0;
 const district_1 = __importDefault(require("../models/district"));
 const information_1 = __importDefault(require("../models/information"));
-const web_push_1 = __importDefault(require("web-push"));
+const subscription_1 = __importDefault(require("../models/subscription"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getInformations = (req, res, next) => {
     if (req.session.userLoggedIn) {
@@ -38,7 +38,7 @@ const getInformations = (req, res, next) => {
 exports.getInformations = getInformations;
 const postSubscribe = (req, res, next) => {
     const name = req.body.name;
-    console.log(name);
+    // console.log(name);
     district_1.default.findOne({ name }).then((doc) => {
         if (!doc) {
             return res.redirect("/");
@@ -53,7 +53,7 @@ const postSubscribe = (req, res, next) => {
             {
                 if (userIds.some((val) => String(val) == String(userId))) {
                     userIds = userIds.filter((id) => String(id) !== String(userId));
-                    console.log(userIds);
+                    // console.log(userIds);
                 }
                 else {
                     userIds.push(userId);
@@ -67,16 +67,29 @@ const postSubscribe = (req, res, next) => {
 };
 exports.postSubscribe = postSubscribe;
 const postWebPush = (req, res, next) => {
-    const subscription = req.body.subscription;
-    const userId = req.body.userId;
-    console.dir(subscription, userId);
-    //TODO: Store subscription keys and userId in DB
-    web_push_1.default.setVapidDetails("192.168.1.169:3001", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
-    res.sendStatus(200);
-    const payload = JSON.stringify({
-        title: "test",
-        body: "test",
-    });
-    web_push_1.default.sendNotification(subscription, payload);
+    if (req.session.userLoggedIn) {
+        const subscription = req.body.subscription;
+        const user = req.session.user;
+        let newSub = new subscription_1.default({
+            subscription,
+            userId: mongoose_1.default.Types.ObjectId(user._id),
+        });
+        // console.log(subscription);
+        subscription_1.default
+            .exists({ userId: mongoose_1.default.Types.ObjectId(user._id) })
+            .then((exist) => {
+            if (exist) {
+                subscription_1.default
+                    .updateOne({ userId: mongoose_1.default.Types.ObjectId(user._id) }, { subscription: subscription })
+                    .then((updated) => {
+                    // console.log("Updated", updated);
+                });
+                return res.status(422);
+            }
+            newSub.save().then((doc) => {
+                return res.status(200);
+            });
+        });
+    }
 };
 exports.postWebPush = postWebPush;

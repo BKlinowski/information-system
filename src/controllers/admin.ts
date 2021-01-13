@@ -1,9 +1,11 @@
 import { RequestHandler } from "express";
 
 import { validationResult } from "express-validator";
+import webpush from "web-push";
 
 import districtModel from "../models/district";
 import informationModel from "../models/information";
+import subscriptionModel from "../models/subscription";
 
 import mongoose from "mongoose";
 
@@ -33,7 +35,7 @@ export const getAddNewInformation: RequestHandler = (req, res, next) => {
 export const postAddDistrict: RequestHandler = (req, res, next) => {
   const isEdit = req.body.isEdit == "true" ? true : false;
   const errors = validationResult(req);
-  console.log("ADD DISTRICT", errors.array());
+  // console.log("ADD DISTRICT", errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/addDistrict", {
       isEdit,
@@ -80,7 +82,7 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
   const importance = req.body.importance;
   const district = req.body.district;
   const oldName = req.body.oldName;
-  console.log(errors.array());
+  // console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/addInformation", {
       error: errors.array(),
@@ -106,6 +108,7 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
           oldName,
         });
       }
+
       const newInformation = new informationModel({
         title,
         description,
@@ -115,8 +118,8 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
       });
       if (isEdit) {
         const oldName = req.body.oldName;
-        console.log("OLD", oldName);
-        console.log(district);
+        // console.log("OLD", oldName);
+        // console.log(district);
         informationModel
           .updateOne(
             { title: oldName },
@@ -128,11 +131,58 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
               districtId: mongoose.Types.ObjectId(doc._id),
             }
           )
-          .then((doc) => {
+          .then(() => {
+            for (let i = 0; i < doc.subscriptions.length; i++) {
+              subscriptionModel
+                .findOne({ userId: doc.subscriptions[i] })
+                .then((sub) => {
+                  if (sub) {
+                    webpush.setVapidDetails(
+                      "mailto:informationApp@test.org",
+                      process.env.PUBLIC_VAPID_KEY!,
+                      process.env.PRIVATE_VAPID_KEY!
+                    );
+                    const payload = JSON.stringify({
+                      title,
+                      description,
+                      importance,
+                      imageURL,
+                      district,
+                    });
+
+                    webpush
+                      .sendNotification(sub.subscription, payload)
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }
+                });
+            }
             return res.redirect("/");
           });
       } else {
         newInformation.save().then(() => {
+          for (let i = 0; i < doc.subscriptions.length; i++) {
+            subscriptionModel
+              .findOne({ userId: doc.subscriptions[i] })
+              .then((sub) => {
+                if (sub) {
+                  webpush.setVapidDetails(
+                    "mailto:informationApp@test.org",
+                    process.env.PUBLIC_VAPID_KEY!,
+                    process.env.PRIVATE_VAPID_KEY!
+                  );
+                  const payload = JSON.stringify({
+                    title,
+                    description,
+                    importance,
+                    imageURL,
+                    district,
+                  });
+                  webpush.sendNotification(sub.subscription, payload);
+                }
+              });
+          }
           return res.redirect("/");
         });
       }

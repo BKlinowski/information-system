@@ -34,6 +34,8 @@ const store = new MongoDBStore({
 });
 const dist = require("./data/disctricts.json");
 
+app.use(express.json());
+
 app.use(
   express.urlencoded({
     extended: true,

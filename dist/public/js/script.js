@@ -6,7 +6,7 @@ const logout = document.querySelector("#logout");
 if (logout) {
     logout.addEventListener("click", (event) => {
         event.preventDefault();
-        fetch(`auth/logout`, {
+        fetch(`/auth/logout`, {
             method: "POST",
         }).then(() => {
             window.location.reload();
@@ -25,32 +25,36 @@ backdrop.addEventListener("click", () => {
 });
 const publicVapidKey = "BI6PBiHOlFwGDh2LGJ-6LhYu9_sNoij6aqEHq23TCM3B__AerYWtvfZulJqGwj3rZ6Ii1wLRmT_V1zkc8pS5stw";
 if ("serviceWorker" in navigator) {
-    console.log("Registering service worker");
-    run().catch((error) => console.error(error));
+    if (window.Notification) {
+        if (Notification.permission != "granted") {
+            Notification.requestPermission(() => {
+                if (Notification.permission === "granted") {
+                    run().catch((error) => console.error(error));
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        }
+    }
 }
 async function run() {
-    console.log("Registering service worker");
-    const registration = await navigator.serviceWorker.register("/worker.js", {
-        scope: "/",
+    const registration = await navigator.serviceWorker.register("/js/worker.js", {
+        scope: "/js/",
     });
-    console.log("Registered service worker");
-    console.log("Registering push");
     const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         // The `urlBase64ToUint8Array()` function is the same as in
         // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     });
-    console.log("Registered push");
-    console.log("Sending push");
+    console.log(subscription);
     await fetch("/webPush", {
         method: "POST",
-        body: JSON.stringify(subscription),
+        body: JSON.stringify({ subscription }),
         headers: {
             "content-type": "application/json",
         },
     });
-    console.log("Sent push");
 }
 //Decoder base64 to uint8
 function urlBase64ToUint8Array(base64String) {

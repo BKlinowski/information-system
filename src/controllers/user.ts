@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 
 import districtModel from "../models/district";
 import informationModel from "../models/information";
+import subscriptionModel from "../models/subscription";
 import webpush from "web-push";
 
 import mongoose from "mongoose";
@@ -36,7 +37,7 @@ export const getInformations: RequestHandler = (req, res, next) => {
 
 export const postSubscribe: RequestHandler = (req, res, next) => {
   const name = req.body.name;
-  console.log(name);
+  // console.log(name);
   districtModel.findOne({ name }).then((doc) => {
     if (!doc) {
       return res.redirect("/");
@@ -50,7 +51,7 @@ export const postSubscribe: RequestHandler = (req, res, next) => {
       {
         if (userIds.some((val) => String(val) == String(userId))) {
           userIds = userIds.filter((id) => String(id) !== String(userId));
-          console.log(userIds);
+          // console.log(userIds);
         } else {
           userIds.push(userId);
         }
@@ -63,19 +64,31 @@ export const postSubscribe: RequestHandler = (req, res, next) => {
 };
 
 export const postWebPush: RequestHandler = (req, res, next) => {
-  const subscription = req.body.subscription;
-  const userId = req.body.userId;
-  console.dir(subscription, userId);
-  //TODO: Store subscription keys and userId in DB
-  webpush.setVapidDetails(
-    "192.168.1.169:3001",
-    process.env.PUBLIC_VAPID_KEY!,
-    process.env.PRIVATE_VAPID_KEY!
-  );
-  res.sendStatus(200);
-  const payload = JSON.stringify({
-    title: "test",
-    body: "test",
-  });
-  webpush.sendNotification(subscription, payload);
+  if (req.session.userLoggedIn) {
+    const subscription = req.body.subscription;
+    const user = req.session.user;
+    let newSub = new subscriptionModel({
+      subscription,
+      userId: mongoose.Types.ObjectId(user._id),
+    });
+    // console.log(subscription);
+    subscriptionModel
+      .exists({ userId: mongoose.Types.ObjectId(user._id) })
+      .then((exist) => {
+        if (exist) {
+          subscriptionModel
+            .updateOne(
+              { userId: mongoose.Types.ObjectId(user._id) },
+              { subscription: subscription }
+            )
+            .then((updated) => {
+              // console.log("Updated", updated);
+            });
+          return res.status(422);
+        }
+        newSub.save().then((doc) => {
+          return res.status(200);
+        });
+      });
+  }
 };

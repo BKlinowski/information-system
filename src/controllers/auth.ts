@@ -20,7 +20,7 @@ export const getSignup: RequestHandler = (req, res, next) => {
 
 export const postSignup: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors.array());
+  // console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/signup", {
       error: errors.array(),
@@ -44,7 +44,7 @@ export const postSignup: RequestHandler = (req, res, next) => {
 
 export const postLogin: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors.array());
+  // console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/login", {
       error: [{ msg: "Email or password invalid" }],
@@ -56,7 +56,7 @@ export const postLogin: RequestHandler = (req, res, next) => {
           error: [{ msg: "Email or password invalid" }],
         });
       }
-      console.log("USER: ", user);
+      // console.log("USER: ", user);
       bcrypt
         .compare(req.body.password, user.password)
         .then((doMatch) => {

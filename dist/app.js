@@ -16,6 +16,7 @@ const store = new MongoDBStore({
     collection: "sessions",
 });
 const dist = require("./data/disctricts.json");
+app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({
     extended: true,
     type: "application/x-www-form-urlencoded",

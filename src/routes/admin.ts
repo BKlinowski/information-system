@@ -45,12 +45,12 @@ router.post(
     body("title")
       .notEmpty()
       .withMessage("Title can't be empty")
-      .isAscii()
+      .isAlphanumeric("pl-PL")
       .withMessage("Title must consist of ascii characters only!"),
     body("description")
       .notEmpty()
       .withMessage("Description can't be empty")
-      .isAscii()
+      // .isAlphanumeric("pl-PL")
       .withMessage("Description must consist of ascii characters only!"),
     body("importance")
       .notEmpty()
@@ -102,12 +102,12 @@ router.post(
     body("title")
       .notEmpty()
       .withMessage("Title can't be empty")
-      .isAscii()
+      .isAlphanumeric("pl-PL")
       .withMessage("Title must consist of ascii characters only!"),
     body("description")
       .notEmpty()
       .withMessage("Description can't be empty")
-      .isAscii()
+      // .isAlphanumeric("pl-PL")
       .withMessage("Description must consist of ascii characters only!"),
     body("importance")
       .notEmpty()

@@ -49,12 +49,12 @@ router.post("/addInformation", adminLoggedIn_1.default, [
     check_1.body("title")
         .notEmpty()
         .withMessage("Title can't be empty")
-        .isAscii()
+        .isAlphanumeric("pl-PL")
         .withMessage("Title must consist of ascii characters only!"),
     check_1.body("description")
         .notEmpty()
         .withMessage("Description can't be empty")
-        .isAscii()
+        // .isAlphanumeric("pl-PL")
         .withMessage("Description must consist of ascii characters only!"),
     check_1.body("importance")
         .notEmpty()
@@ -91,12 +91,12 @@ router.post("/editInformation", adminLoggedIn_1.default, [
     check_1.body("title")
         .notEmpty()
         .withMessage("Title can't be empty")
-        .isAscii()
+        .isAlphanumeric("pl-PL")
         .withMessage("Title must consist of ascii characters only!"),
     check_1.body("description")
         .notEmpty()
         .withMessage("Description can't be empty")
-        .isAscii()
+        // .isAlphanumeric("pl-PL")
         .withMessage("Description must consist of ascii characters only!"),
     check_1.body("importance")
         .notEmpty()
