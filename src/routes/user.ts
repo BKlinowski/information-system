@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import * as userController from "../controllers/user";
+import adminLoggedIn from "../middleware/adminLoggedIn";
 
 import userLoggedIn from "../middleware/userLoggedIn";
 
@@ -10,6 +11,6 @@ router.get("/informations", userLoggedIn, userController.getInformations);
 
 router.post("/subscribe", userLoggedIn, userController.postSubscribe);
 
-router.post("/webPush", userLoggedIn, userController.postWebPush);
+router.post("/webPush", userController.postWebPush);
 
 export default router;

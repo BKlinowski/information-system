@@ -130,11 +130,9 @@ const postAddInformation = (req, res, next) => {
                 })
                     .then(() => {
                     for (let i = 0; i < doc.subscriptions.length; i++) {
-                        subscription_1.default
-                            .findOne({ userId: doc.subscriptions[i] })
-                            .then((sub) => {
+                        subscription_1.default.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
                             if (sub) {
-                                web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                await web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
                                 const payload = JSON.stringify({
                                     title,
                                     description,
@@ -142,9 +140,7 @@ const postAddInformation = (req, res, next) => {
                                     imageURL,
                                     district,
                                 });
-                                web_push_1.default
-                                    .sendNotification(sub.subscription, payload)
-                                    .catch((err) => {
+                                web_push_1.default.sendNotification(sub.subscription, payload).catch((err) => {
                                     console.log(err);
                                 });
                             }
@@ -154,13 +150,12 @@ const postAddInformation = (req, res, next) => {
                 });
             }
             else {
-                newInformation.save().then(() => {
+                newInformation.save().then(async () => {
                     for (let i = 0; i < doc.subscriptions.length; i++) {
-                        subscription_1.default
-                            .findOne({ userId: doc.subscriptions[i] })
-                            .then((sub) => {
+                        await subscription_1.default.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
                             if (sub) {
-                                web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                await web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                console.log(process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
                                 const payload = JSON.stringify({
                                     title,
                                     description,
@@ -168,7 +163,7 @@ const postAddInformation = (req, res, next) => {
                                     imageURL,
                                     district,
                                 });
-                                web_push_1.default.sendNotification(sub.subscription, payload);
+                                await web_push_1.default.sendNotification(sub.subscription, payload);
                             }
                         });
                     }

@@ -1,7 +1,7 @@
 "use strict";
 const backdrop = document.querySelector(".backdrop");
 const navbarMenu = document.querySelector(".navbar-menu");
-const navbarBurger = (document.querySelector(".navbar-burger"));
+const navbarBurger = document.querySelector(".navbar-burger");
 const logout = document.querySelector("#logout");
 if (logout) {
     logout.addEventListener("click", (event) => {
@@ -23,7 +23,7 @@ backdrop.addEventListener("click", () => {
     navbarMenu.classList.toggle("is-active");
     navbarBurger.classList.toggle("is-active");
 });
-const publicVapidKey = "BI6PBiHOlFwGDh2LGJ-6LhYu9_sNoij6aqEHq23TCM3B__AerYWtvfZulJqGwj3rZ6Ii1wLRmT_V1zkc8pS5stw";
+const publicVapidKey = "BLCoOdDTa3CSs0K3FRJHzE0nNUeUfKxApEJL7fQbo_XySNuApLNiKnwM56VvY5CLr1qWCrIMJyI5maep9knEZns";
 if ("serviceWorker" in navigator) {
     if (window.Notification) {
         if (Notification.permission != "granted") {
@@ -38,22 +38,44 @@ if ("serviceWorker" in navigator) {
     }
 }
 async function run() {
-    const registration = await navigator.serviceWorker.register("/js/worker.js", {
-        scope: "/js/",
-    });
-    const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        // The `urlBase64ToUint8Array()` function is the same as in
-        // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-    });
+    let subscription, registration;
+    try {
+        registration = await navigator.serviceWorker.register("/js/worker.js", {
+            scope: "/js/",
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
+    try {
+        if (registration) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                // The `urlBase64ToUint8Array()` function is the same as in
+                // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
+                applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+            });
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
     console.log(subscription);
-    await fetch("/webPush", {
+    fetch("/webPush", {
         method: "POST",
         body: JSON.stringify({ subscription }),
         headers: {
             "content-type": "application/json",
         },
+    })
+        .then((res) => {
+        return res.json();
+    })
+        .then((res) => {
+        console.log(res);
+    })
+        .catch((err) => {
+        console.log(err);
     });
 }
 //Decoder base64 to uint8

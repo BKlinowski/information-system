@@ -64,31 +64,39 @@ export const postSubscribe: RequestHandler = (req, res, next) => {
 };
 
 export const postWebPush: RequestHandler = (req, res, next) => {
-  if (req.session.userLoggedIn) {
-    const subscription = req.body.subscription;
-    const user = req.session.user;
-    let newSub = new subscriptionModel({
-      subscription,
-      userId: mongoose.Types.ObjectId(user._id),
+  const subscription = req.body.subscription;
+  console.log(subscription);
+  const user = req.session.user;
+  console.log(user);
+  let newSub = new subscriptionModel({
+    subscription,
+    userId: mongoose.Types.ObjectId(user._id),
+  });
+
+  subscriptionModel
+    .exists({ userId: mongoose.Types.ObjectId(user._id) })
+    .then((exist) => {
+      if (exist) {
+        console.log(exist);
+        subscriptionModel
+          .updateOne({ userId: user._id }, { subscription: subscription })
+          .then((updated) => {
+            // return res.status(200);
+            // console.log("Updated", updated);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        // return res.status(422);
+      } else {
+        newSub
+          .save()
+          .then((doc) => {
+            // return res.status(200);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     });
-    console.log(subscription);
-    subscriptionModel
-      .exists({ userId: mongoose.Types.ObjectId(user._id) })
-      .then((exist) => {
-        if (exist) {
-          subscriptionModel
-            .updateOne(
-              { userId: mongoose.Types.ObjectId(user._id) },
-              { subscription: subscription }
-            )
-            .then((updated) => {
-              // console.log("Updated", updated);
-            });
-          return res.status(422);
-        }
-        newSub.save().then((doc) => {
-          return res.status(200);
-        });
-      });
-  }
 };
