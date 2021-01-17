@@ -71,7 +71,7 @@ export const postWebPush: RequestHandler = (req, res, next) => {
       subscription,
       userId: mongoose.Types.ObjectId(user._id),
     });
-    // console.log(subscription);
+    console.log(subscription);
     subscriptionModel
       .exists({ userId: mongoose.Types.ObjectId(user._id) })
       .then((exist) => {

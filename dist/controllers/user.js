@@ -74,7 +74,7 @@ const postWebPush = (req, res, next) => {
             subscription,
             userId: mongoose_1.default.Types.ObjectId(user._id),
         });
-        // console.log(subscription);
+        console.log(subscription);
         subscription_1.default
             .exists({ userId: mongoose_1.default.Types.ObjectId(user._id) })
             .then((exist) => {
