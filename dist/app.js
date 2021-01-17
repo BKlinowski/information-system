@@ -15,7 +15,7 @@ const store = new MongoDBStore({
     uri: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.qbmdu.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`,
     collection: "sessions",
 });
-const dist = require("./data/disctricts.json");
+app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({
     extended: true,
     type: "application/x-www-form-urlencoded",

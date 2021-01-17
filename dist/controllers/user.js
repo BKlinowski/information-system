@@ -3,21 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postSubscribe = exports.getInformations = void 0;
-const info = require("../data/information.json");
+exports.postWebPush = exports.postSubscribe = exports.getInformations = void 0;
 const district_1 = __importDefault(require("../models/district"));
 const information_1 = __importDefault(require("../models/information"));
+const subscription_1 = __importDefault(require("../models/subscription"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getInformations = (req, res, next) => {
     if (req.session.userLoggedIn) {
-        district_1.default
-            .find({ subscriptions: mongoose_1.default.Types.ObjectId(req.session.user._id) })
-            .then(async (docs) => {
+        district_1.default.find({ subscriptions: mongoose_1.default.Types.ObjectId(req.session.user._id) }).then(async (docs) => {
             const informations = [];
             for (let i = 0; i < docs.length; i++) {
-                await information_1.default
-                    .find({ districtId: docs[i]._id })
-                    .then((info) => {
+                await information_1.default.find({ districtId: docs[i]._id }).then((info) => {
                     if (info) {
                         for (let j = 0; j < info.length; j++) {
                             informations.push({
@@ -38,7 +34,7 @@ const getInformations = (req, res, next) => {
 exports.getInformations = getInformations;
 const postSubscribe = (req, res, next) => {
     const name = req.body.name;
-    console.log(name);
+    // console.log(name);
     district_1.default.findOne({ name }).then((doc) => {
         if (!doc) {
             return res.redirect("/");
@@ -53,7 +49,7 @@ const postSubscribe = (req, res, next) => {
             {
                 if (userIds.some((val) => String(val) == String(userId))) {
                     userIds = userIds.filter((id) => String(id) !== String(userId));
-                    console.log(userIds);
+                    // console.log(userIds);
                 }
                 else {
                     userIds.push(userId);
@@ -66,3 +62,39 @@ const postSubscribe = (req, res, next) => {
     });
 };
 exports.postSubscribe = postSubscribe;
+const postWebPush = (req, res, next) => {
+    const subscription = req.body.subscription;
+    console.log(subscription);
+    const user = req.session.user;
+    console.log(user);
+    let newSub = new subscription_1.default({
+        subscription,
+        userId: mongoose_1.default.Types.ObjectId(user._id),
+    });
+    subscription_1.default.exists({ userId: mongoose_1.default.Types.ObjectId(user._id) }).then((exist) => {
+        if (exist) {
+            console.log(exist);
+            subscription_1.default
+                .updateOne({ userId: user._id }, { subscription: subscription })
+                .then((updated) => {
+                // return res.status(200);
+                // console.log("Updated", updated);
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+            // return res.status(422);
+        }
+        else {
+            newSub
+                .save()
+                .then((doc) => {
+                // return res.status(200);
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        }
+    });
+};
+exports.postWebPush = postWebPush;

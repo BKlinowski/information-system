@@ -1,0 +1,51 @@
+<%- include("../includes/head.ejs") %>
+    </head>
+
+    <body>
+        <%- include("../includes/nav.ejs") %>
+            <main>
+                <div class="container">
+                    <div class="columns is-multiline">
+                        <% districts.forEach(district=> { %>
+                            <div class="column is-4-widescreen is-6-tablet">
+                                <div class="box is-child is-full">
+                                    <article class="media">
+                                        <figure class="media-left">
+                                            <p class="image is-128x128">
+                                                <img src="<%= district.imageURL %>">
+                                            </p>
+                                        </figure>
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <p>
+                                                    <strong>
+                                                        <%= district.name %>
+                                                    </strong>
+                                                </p>
+                                                <form action="/admin/editDistrict" method="POST">
+                                                    <input type="hidden" name="name" value="<%= district.name %>">
+                                                    <input type="hidden" name="imageURL"
+                                                        value="<%= district.imageURL %>">
+                                                    <button type="submit" class="button is-link is-outlined is-medium">
+                                                        Edit</button>
+                                                </form>
+                                                <form action="/admin/deleteDistrict" method="POST">
+                                                    <input type="hidden" name="name" value="<%= district.name %>">
+                                                    <button type="submit"
+                                                        class="button is-danger is-outlined is-medium">
+                                                        Delete</button>
+                                                </form>
+                                            </div>
+                                            <nav class="level is-mobile">
+                                                <div class="level-left">
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+            </main>
+    </body>

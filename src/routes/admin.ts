@@ -21,6 +21,67 @@ router.post(
   adminLoggedIn,
   [
     body("name")
+      .notEmpty()
+      .withMessage("Name can't be empty")
+      .isAlphanumeric("pl-PL")
+      .withMessage("Name must consist of alphanumeric characters only!")
+      .trim(),
+    body("imageURL")
+      .notEmpty()
+      .withMessage("Url can't be empty")
+      .isURL({
+        protocols: ["http", "https"],
+        require_protocol: true,
+      })
+      .withMessage("imageURL must be URL!"),
+  ],
+  adminController.postAddDistrict
+);
+
+router.post(
+  "/addInformation",
+  adminLoggedIn,
+  [
+    body("title")
+      .notEmpty()
+      .withMessage("Title can't be empty")
+      .isAlphanumeric("pl-PL")
+      .withMessage("Title must consist of ascii characters only!"),
+    body("description")
+      .notEmpty()
+      .withMessage("Description can't be empty")
+      // .isAlphanumeric("pl-PL")
+      .withMessage("Description must consist of ascii characters only!"),
+    body("importance")
+      .notEmpty()
+      .withMessage("Importance can't be empty")
+      .isInt({ min: 1, max: 3 })
+      .withMessage("The range of importance must be 1 to 3"),
+    body("imageURL")
+      .isURL({
+        protocols: ["http", "https"],
+        require_protocol: true,
+      })
+      .withMessage("It must be URL!"),
+    body("district")
+      .notEmpty()
+      .withMessage("District can't be empty")
+      .isAlphanumeric("pl-PL")
+      .withMessage("District must consist of ascii characters only!"),
+  ],
+
+  adminController.postAddInformation
+);
+
+router.get("/edit-districts", adminController.getEditDistricts);
+
+router.get("/edit-informations", adminController.getEditInformations);
+
+router.post(
+  "/editDistrict",
+  adminLoggedIn,
+  [
+    body("name")
       .isAlphanumeric("pl-PL")
       .withMessage("Name must consist of alphanumeric characters only!")
       .trim(),
@@ -31,21 +92,22 @@ router.post(
       })
       .withMessage("It must be URL!"),
   ],
-  adminController.postAddDistrict
+  adminController.postEditDistrict
 );
 
 router.post(
-  "/addInformation",
+  "/editInformation",
+  adminLoggedIn,
   [
     body("title")
       .notEmpty()
       .withMessage("Title can't be empty")
-      .isAscii()
+      .isAlphanumeric("pl-PL")
       .withMessage("Title must consist of ascii characters only!"),
     body("description")
       .notEmpty()
       .withMessage("Description can't be empty")
-      .isAscii()
+      // .isAlphanumeric("pl-PL")
       .withMessage("Description must consist of ascii characters only!"),
     body("importance")
       .notEmpty()
@@ -64,8 +126,19 @@ router.post(
       .isAlphanumeric("pl-PL")
       .withMessage("District must consist of ascii characters only!"),
   ],
+  adminController.postEditInformation
+);
+
+router.post(
+  "/deleteDistrict",
   adminLoggedIn,
-  adminController.postAddInformation
+  adminController.postDeleteDistrict
+);
+
+router.post(
+  "/deleteInformation",
+  adminLoggedIn,
+  adminController.postDeleteInformation
 );
 
 export default router;

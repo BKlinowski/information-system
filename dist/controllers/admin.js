@@ -3,25 +3,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postAddInformation = exports.postAddDistrict = exports.getAddNewInformation = exports.getAddDistrict = void 0;
+exports.postDeleteInformation = exports.postDeleteDistrict = exports.postEditDistrict = exports.postEditInformation = exports.getEditInformations = exports.getEditDistricts = exports.postAddInformation = exports.postAddDistrict = exports.getAddNewInformation = exports.getAddDistrict = void 0;
 const express_validator_1 = require("express-validator");
+const web_push_1 = __importDefault(require("web-push"));
 const district_1 = __importDefault(require("../models/district"));
 const information_1 = __importDefault(require("../models/information"));
+const subscription_1 = __importDefault(require("../models/subscription"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAddDistrict = (req, res, next) => {
-    res.render("admin/addDistrict");
+    res.render("admin/addDistrict", {
+        isEdit: false,
+        name: null,
+        imageURL: null,
+        oldName: "",
+        error: null,
+    });
 };
 exports.getAddDistrict = getAddDistrict;
 const getAddNewInformation = (req, res, next) => {
-    res.render("admin/addInformation");
+    res.render("admin/addInformation", {
+        isEdit: false,
+        title: null,
+        description: null,
+        importance: null,
+        imageURL: null,
+        district: null,
+        oldName: "",
+        error: null,
+    });
 };
 exports.getAddNewInformation = getAddNewInformation;
 const postAddDistrict = (req, res, next) => {
+    const isEdit = req.body.isEdit == "true" ? true : false;
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    // console.log("ADD DISTRICT", errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("admin/addDistrict", {
+            isEdit,
             error: errors.array(),
+            name: req.body.name,
+            imageURL: req.body.imageURL,
+            oldName: req.body.oldName,
         });
     }
     else {
@@ -31,42 +53,190 @@ const postAddDistrict = (req, res, next) => {
             name,
             imageURL: url,
         });
-        newDistrict.save().then((doc) => {
-            return res.redirect("/");
-        });
+        if (isEdit) {
+            const oldName = req.body.oldName;
+            // console.log("OLD", oldName);
+            district_1.default
+                .updateOne({ name: oldName }, {
+                name,
+                imageURL: url,
+            })
+                .then((doc) => {
+                return res.redirect("/");
+            });
+        }
+        else {
+            newDistrict.save().then((doc) => {
+                return res.redirect("/");
+            });
+        }
     }
 };
 exports.postAddDistrict = postAddDistrict;
 const postAddInformation = (req, res, next) => {
+    const isEdit = req.body.isEdit == "true" ? true : false;
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    const title = req.body.title;
+    const description = req.body.description;
+    const imageURL = req.body.imageURL;
+    const importance = req.body.importance;
+    const district = req.body.district;
+    const oldName = req.body.oldName;
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("admin/addInformation", {
             error: errors.array(),
+            isEdit,
+            title,
+            description,
+            importance,
+            imageURL,
+            district,
+            oldName,
         });
     }
     else {
-        const title = req.body.title;
-        const description = req.body.description;
-        const imageURL = req.body.imageURL;
-        const importance = req.body.importance;
-        const district = req.body.district;
         district_1.default.findOne({ name: district }).then((doc) => {
             if (!doc) {
-                return res.redirect("/admin/add-new-information");
+                return res.status(422).render("admin/addInformation", {
+                    error: [{ msg: "There is no district with this name!" }],
+                    isEdit,
+                    title,
+                    description,
+                    importance,
+                    imageURL,
+                    district,
+                    oldName,
+                });
             }
             const newInformation = new information_1.default({
                 title,
                 description,
                 imageURL,
                 importance,
-                district,
                 districtId: mongoose_1.default.Types.ObjectId(doc._id),
             });
-            newInformation.save().then(() => {
-                return res.redirect("/");
-            });
+            if (isEdit) {
+                const oldName = req.body.oldName;
+                // console.log("OLD", oldName);
+                // console.log(district);
+                information_1.default
+                    .updateOne({ title: oldName }, {
+                    title,
+                    description,
+                    importance,
+                    imageURL,
+                    districtId: mongoose_1.default.Types.ObjectId(doc._id),
+                })
+                    .then(() => {
+                    for (let i = 0; i < doc.subscriptions.length; i++) {
+                        subscription_1.default.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
+                            if (sub) {
+                                await web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                const payload = JSON.stringify({
+                                    title,
+                                    description,
+                                    importance,
+                                    imageURL,
+                                    district,
+                                });
+                                web_push_1.default.sendNotification(sub.subscription, payload).catch((err) => {
+                                    console.log(err);
+                                });
+                            }
+                        });
+                    }
+                    return res.redirect("/");
+                });
+            }
+            else {
+                newInformation.save().then(async () => {
+                    for (let i = 0; i < doc.subscriptions.length; i++) {
+                        await subscription_1.default.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
+                            if (sub) {
+                                await web_push_1.default.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                console.log(process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
+                                const payload = JSON.stringify({
+                                    title,
+                                    description,
+                                    importance,
+                                    imageURL,
+                                    district,
+                                });
+                                await web_push_1.default.sendNotification(sub.subscription, payload);
+                            }
+                        });
+                    }
+                    return res.redirect("/");
+                });
+            }
         });
     }
 };
 exports.postAddInformation = postAddInformation;
+const getEditDistricts = (req, res, next) => {
+    district_1.default.find((err, docs) => {
+        if (err) {
+            console.log(err);
+        }
+        if (!docs) {
+            return res.redirect("/");
+        }
+        return res.render("admin/editDistricts", {
+            districts: docs,
+        });
+    });
+};
+exports.getEditDistricts = getEditDistricts;
+const getEditInformations = (req, res, next) => {
+    information_1.default
+        .find()
+        .populate("districtId")
+        .then(async (docs) => {
+        // console.log(docs);
+        res.render("admin/editInformations", {
+            info: docs,
+        });
+    });
+};
+exports.getEditInformations = getEditInformations;
+const postEditInformation = (req, res, next) => {
+    const title = req.body.title;
+    const description = req.body.description;
+    const imageURL = req.body.imageURL;
+    const importance = req.body.importance;
+    const district = req.body.district;
+    res.render("admin/addInformation", {
+        isEdit: true,
+        title,
+        description,
+        imageURL,
+        importance,
+        district,
+        oldName: title,
+        error: null,
+    });
+};
+exports.postEditInformation = postEditInformation;
+const postEditDistrict = (req, res, next) => {
+    const name = req.body.name;
+    const imageURL = req.body.imageURL;
+    res.render("admin/addDistrict", {
+        isEdit: true,
+        name,
+        imageURL,
+        oldName: name,
+        error: null,
+    });
+};
+exports.postEditDistrict = postEditDistrict;
+const postDeleteDistrict = async (req, res, next) => {
+    await district_1.default.deleteOne({ name: req.body.name });
+    res.redirect("/admin/edit-districts");
+};
+exports.postDeleteDistrict = postDeleteDistrict;
+const postDeleteInformation = async (req, res, next) => {
+    await information_1.default.deleteOne({ title: req.body.title });
+    res.redirect("/admin/edit-informations");
+};
+exports.postDeleteInformation = postDeleteInformation;

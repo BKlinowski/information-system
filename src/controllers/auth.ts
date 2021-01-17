@@ -5,18 +5,22 @@ import bcrypt from "bcrypt";
 import User from "../models/user";
 
 export const getLogin: RequestHandler = (req, res, next) => {
-  res.render("auth/login");
+  res.render("auth/login", {
+    error: null,
+  });
   res.end();
 };
 
 export const getSignup: RequestHandler = (req, res, next) => {
-  res.render("auth/signup");
+  res.render("auth/signup", {
+    error: null,
+  });
   res.end();
 };
 
 export const postSignup: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors.array());
+  // console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/signup", {
       error: errors.array(),
@@ -40,10 +44,10 @@ export const postSignup: RequestHandler = (req, res, next) => {
 
 export const postLogin: RequestHandler = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors.array());
+  // console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/login", {
-      error: errors.array(),
+      error: [{ msg: "Email or password invalid" }],
     });
   } else {
     User.findOne({ email: req.body.email }).then((user) => {
@@ -52,7 +56,7 @@ export const postLogin: RequestHandler = (req, res, next) => {
           error: [{ msg: "Email or password invalid" }],
         });
       }
-      console.log("USER: ", user);
+      // console.log("USER: ", user);
       bcrypt
         .compare(req.body.password, user.password)
         .then((doMatch) => {

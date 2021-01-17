@@ -8,18 +8,22 @@ const express_validator_1 = require("express-validator");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("../models/user"));
 const getLogin = (req, res, next) => {
-    res.render("auth/login");
+    res.render("auth/login", {
+        error: null,
+    });
     res.end();
 };
 exports.getLogin = getLogin;
 const getSignup = (req, res, next) => {
-    res.render("auth/signup");
+    res.render("auth/signup", {
+        error: null,
+    });
     res.end();
 };
 exports.getSignup = getSignup;
 const postSignup = (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("auth/signup", {
             error: errors.array(),
@@ -44,10 +48,10 @@ const postSignup = (req, res, next) => {
 exports.postSignup = postSignup;
 const postLogin = (req, res, next) => {
     const errors = express_validator_1.validationResult(req);
-    console.log(errors.array());
+    // console.log(errors.array());
     if (!errors.isEmpty()) {
         return res.status(422).render("auth/login", {
-            error: errors.array(),
+            error: [{ msg: "Email or password invalid" }],
         });
     }
     else {
@@ -57,7 +61,7 @@ const postLogin = (req, res, next) => {
                     error: [{ msg: "Email or password invalid" }],
                 });
             }
-            console.log("USER: ", user);
+            // console.log("USER: ", user);
             bcrypt_1.default
                 .compare(req.body.password, user.password)
                 .then((doMatch) => {
