@@ -133,9 +133,46 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
           )
           .then(() => {
             for (let i = 0; i < doc.subscriptions.length; i++) {
-              subscriptionModel.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
+              subscriptionModel
+                .findOne({ userId: doc.subscriptions[i] })
+                .then(async (sub) => {
+                  if (sub) {
+                    await webpush.setVapidDetails(
+                      "mailto:informationApp@test.org",
+                      process.env.PUBLIC_VAPID_KEY!,
+                      process.env.PRIVATE_VAPID_KEY!
+                    );
+                    const payload = JSON.stringify({
+                      title,
+                      description,
+                      importance,
+                      imageURL,
+                      district,
+                    });
+
+                    webpush
+                      .sendNotification(sub.subscription, payload)
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }
+                });
+            }
+            return res.redirect("/");
+          });
+      } else {
+        newInformation.save().then(async () => {
+          for (let i = 0; i < doc.subscriptions.length; i++) {
+            await subscriptionModel
+              .findOne({ userId: doc.subscriptions[i] })
+              .then(async (sub) => {
                 if (sub) {
-                  await webpush.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY!, process.env.PRIVATE_VAPID_KEY!);
+                  await webpush.setVapidDetails(
+                    "mailto:informationApp@test.org",
+                    process.env.PUBLIC_VAPID_KEY!,
+                    process.env.PRIVATE_VAPID_KEY!
+                  );
+                  // console.log(process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
                   const payload = JSON.stringify({
                     title,
                     description,
@@ -143,32 +180,9 @@ export const postAddInformation: RequestHandler = (req, res, next) => {
                     imageURL,
                     district,
                   });
-
-                  webpush.sendNotification(sub.subscription, payload).catch((err) => {
-                    console.log(err);
-                  });
+                  await webpush.sendNotification(sub.subscription, payload);
                 }
               });
-            }
-            return res.redirect("/");
-          });
-      } else {
-        newInformation.save().then(async () => {
-          for (let i = 0; i < doc.subscriptions.length; i++) {
-            await subscriptionModel.findOne({ userId: doc.subscriptions[i] }).then(async (sub) => {
-              if (sub) {
-                await webpush.setVapidDetails("mailto:informationApp@test.org", process.env.PUBLIC_VAPID_KEY!, process.env.PRIVATE_VAPID_KEY!);
-                console.log(process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
-                const payload = JSON.stringify({
-                  title,
-                  description,
-                  importance,
-                  imageURL,
-                  district,
-                });
-                await webpush.sendNotification(sub.subscription, payload);
-              }
-            });
           }
           return res.redirect("/");
         });

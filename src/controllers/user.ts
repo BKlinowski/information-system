@@ -65,9 +65,9 @@ export const postSubscribe: RequestHandler = (req, res, next) => {
 
 export const postWebPush: RequestHandler = (req, res, next) => {
   const subscription = req.body.subscription;
-  console.log(subscription);
+  // console.log(subscription);
   const user = req.session.user;
-  console.log(user);
+  // console.log(user);
   let newSub = new subscriptionModel({
     subscription,
     userId: mongoose.Types.ObjectId(user._id),
@@ -77,7 +77,7 @@ export const postWebPush: RequestHandler = (req, res, next) => {
     .exists({ userId: mongoose.Types.ObjectId(user._id) })
     .then((exist) => {
       if (exist) {
-        console.log(exist);
+        // console.log(exist);
         subscriptionModel
           .updateOne({ userId: user._id }, { subscription: subscription })
           .then((updated) => {
